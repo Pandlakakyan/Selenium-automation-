@@ -1,0 +1,247 @@
+--Different methods to select values from drop down
+--How to get first selected item
+--Print all values from dropdown
+
+public class DropDownDemo {
+
+
+
+     public WebDriver driver;
+
+
+
+     public void launch() throws InterruptedException {
+
+
+
+          System.setProperty("webdriver.chrome.driver",
+
+                   "C:\\Users\\Hitendra\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
+
+          driver = new ChromeDriver();
+
+          driver.manage().window().maximize();
+
+          driver.get("https://www.automationtestinginsider.com/2019/08/student-registration-form.html");
+
+          Thread.sleep(2000);
+
+     }
+
+
+
+     public void dropDownDemo() throws InterruptedException {
+
+
+
+          WebElement bDay = driver.findElement(By.id("Birthday_Day"));
+
+          WebElement bMonth = driver.findElement(By.id("Birthday_Month"));
+
+          WebElement bYear = driver.findElement(By.id("Birthday_Year"));
+
+
+
+          Select selectDay = new Select(bDay);
+
+          Select selectMonth = new Select(bMonth);
+
+          Select selectYear = new Select(bYear);
+
+
+
+          selectDay.selectByIndex(4); // 4
+
+          Thread.sleep(1000);
+
+          selectMonth.selectByValue("February");
+
+          selectMonth.selectByValue("January");
+
+          Thread.sleep(1000);
+
+          selectYear.selectByVisibleText("1990");
+
+          Thread.sleep(1000);
+
+
+
+          WebElement firstSelectedItem = selectMonth.getFirstSelectedOption();
+
+          System.out.println(firstSelectedItem.getText());
+
+
+
+          List<WebElement> monthList = selectMonth.getOptions();
+
+
+
+          System.out.println("total Months: " + monthList.size()); // 13
+
+
+
+          for (WebElement ele : monthList) {
+
+              System.out.println(ele.getText());
+
+          }
+
+     }
+
+
+
+     public void tearDown() {
+
+          driver.close();
+
+     }
+
+
+
+     public static void main(String[] args) throws InterruptedException {
+
+
+
+          DropDownDemo obj = new DropDownDemo();
+
+          obj.launch();
+
+          obj.dropDownDemo();
+
+          obj.tearDown();
+
+     }
+
+}
+
+
+
+Multi select dropdown list:
+
+With below example, we will understand:
+--Deselect method
+--Method getAllSelectedOptions  Print all selected options
+--Compare with actual List with expected list
+public class DropDownDemo1 {
+
+
+
+     public WebDriver driver;
+
+
+
+     public void launch() throws InterruptedException {
+
+
+
+          System.setProperty("webdriver.chrome.driver",
+
+                   "C:\\Users\\Hitendra\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
+
+          driver = new ChromeDriver();
+
+          driver.manage().window().maximize();
+
+          driver.get("https://www.seleniumeasy.com/test/basic-select-dropdown-demo.html");
+
+          Thread.sleep(2000);
+
+     }
+
+
+
+     public void dropDownDemo() throws InterruptedException {
+
+
+
+          WebElement multiSelectList = driver.findElement(By.id("multi-select"));
+
+
+
+          Select selectCity = new Select(multiSelectList);
+
+
+
+          selectCity.selectByIndex(0); // 4
+
+          Thread.sleep(1000);
+
+          selectCity.selectByValue("Florida");
+
+          // selectCity.deselectByValue("Florida");
+
+          // selectCity.deselectByValue("Florida");
+
+          // selectMonth.selectByValue("January");
+
+          Thread.sleep(1000);
+
+          selectCity.selectByVisibleText("New Jersey");
+
+          Thread.sleep(1000);
+
+
+
+          List<String> expectedList = new ArrayList<>();
+
+          expectedList.add("California");
+
+          expectedList.add("New Jersey");
+
+          expectedList.add("Florida");
+
+
+
+          List<String> actualList = new ArrayList<>();
+
+
+
+          List<WebElement> allSelectedoptions = selectCity.getAllSelectedOptions();
+
+
+
+          for (WebElement ele : allSelectedoptions) {
+
+              actualList.add(ele.getText());
+
+              System.out.println(ele.getText());
+
+
+
+          }
+
+
+
+          Collections.sort(expectedList);
+
+          Collections.sort(actualList);
+
+          boolean result = actualList.equals(expectedList);
+
+          System.out.println("The result of Comparison is:" + result);
+
+     }
+
+
+     public void tearDown() {
+
+          driver.close();
+
+     }
+
+
+     public static void main(String[] args) throws InterruptedException {
+
+
+
+          DropDownDemo1 obj = new DropDownDemo1();
+
+          obj.launch();
+
+          obj.dropDownDemo();
+
+          obj.tearDown();
+
+     }
+
+}
