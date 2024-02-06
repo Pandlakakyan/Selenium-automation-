@@ -1,0 +1,99 @@
+usage of implicitly code.
+import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Demo3 {
+
+ public static void main(String[] args) throws InterruptedException {
+
+  WebDriver driver;
+  System.setProperty("webdriver.chrome.driver",
+    "C:\\Users\\p\\Downloads\\chromedriver_win32\\chromedriver.exe");
+  driver = new ChromeDriver();
+  driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+  driver.manage().window().maximize();
+  driver.get("https://www.automationtestinginsider.com/2019/08/textarea-textarea-element-defines-multi.html");
+  driver.findElement(By.id("testWait123")).click();
+  WebElement ele = driver.findElement(By.xpath("//div[text()='Welcome To Automation Testing Insider']"));
+  String text = ele.getText();
+  System.out.println("The msg is: " + text);
+  driver.close();
+ }
+}
+
+created an object of WebDriver wait and passed the driver reference and timeout as parameters. However in below example i have created user defined method findElement which we can use for any web elements.
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Demo4 {
+
+ public static void main(String[] args) throws InterruptedException {
+
+  WebDriver driver;
+  System.setProperty("webdriver.chrome.driver",
+    "C:\\Users\\Hitendra\\Downloads\\chromedriver_win32\\chromedriver.exe");
+  driver = new ChromeDriver();
+  driver.manage().window().maximize();
+  driver.get("https://www.automationtestinginsider.com/2019/08/textarea-textarea-element-defines-multi.html");
+  driver.findElement(By.id("testWait123")).click();
+  String xpath="//div[text()='Welcome To Automation Testing Insider']";
+  WebElement ele=findElement(driver,xpath,10);
+  String text = ele.getText();
+  System.out.println("The msg is: " + text);
+  driver.close();
+ }
+ 
+ public static WebElement findElement(WebDriver driver1, String xpath1, int timeout) {
+  WebElement ele=new WebDriverWait(driver1, timeout).until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath1)));
+  return ele;
+ }
+}
+
+
+Let's consider a scenario where an element is loaded at different intervals of time. The element might load within 10 seconds, 20 seconds or even more then that if we declare an explicit wait of 20 seconds. It will wait till the specified time before throwing an exception. In such scenarios, the fluent wait is the ideal wait to use as this will try to find the element at different frequency until it finds it or the final timer runs out.
+
+Please refer below example code:
+import java.time.Duration;
+import java.util.function.Function;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+
+public class Demo5 {
+
+ public static void main(String[] args) throws InterruptedException {
+
+  WebDriver driver;
+  System.setProperty("webdriver.chrome.driver",
+    "C:\\Users\\p\\Downloads\\chromedriver_win32\\chromedriver.exe");
+  driver = new ChromeDriver();
+  driver.manage().window().maximize();
+  driver.get("https://www.automationtestinginsider.com/2019/08/textarea-textarea-element-defines-multi.html");
+  driver.findElement(By.id("testWait123")).click();
+  String xpath="//div[text()='Welcome To Automation Testing Insider']";
+  Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
+    .withTimeout(Duration.ofSeconds(20))
+    .pollingEvery(Duration.ofSeconds(2))
+    .ignoring(Exception.class);
+
+       WebElement ele = wait.until(new Function<WebDriver, WebElement>() {
+         public WebElement apply(WebDriver driver) {
+           return driver.findElement(By.xpath(xpath));
+         }
+       });
+  String text = ele.getText();
+  System.out.println("The msg is: " + text);
+  driver.close();
+ }
+}
+
