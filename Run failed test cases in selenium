@@ -1,0 +1,76 @@
+By running “testng-failed.xml"
+
+We have created two classes ClassA and ClassB. Each class has two test methods of which
+we are deliberately failing one of the tests. 
+public class ClassA {
+
+ @Test
+
+ public void testCase1() {
+
+  System.out.println("this is testcase1");
+
+  Assert.assertTrue(false);
+
+ }
+ @Test
+
+ public void testCase2() {
+  System.out.println("this is testcase2");
+
+  Assert.assertTrue(true);
+ }
+
+}
+public class ClassB {
+
+ @Test
+
+ public void testCase3() {
+
+  System.out.println("this is testcase3");
+
+  Assert.assertTrue(true);
+
+ }
+ @Test
+
+ public void testCase4() {
+
+  System.out.println("this is testcase4");
+
+  Assert.assertTrue(false);
+ }
+}
+
+testng.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Smoke Suite">
+
+  <test name="Test">
+
+    <classes>
+
+      <class name="Com.runFailedTestCases1.ClassA"/>
+
+      <class name="Com.runFailedTestCases1.ClassB"/>
+
+    </classes>
+
+  </test> <!-- Test -->
+
+</suite> <!-- Suite -->
+
+Output
+this is testcase1
+this is testcase2
+this is testcase3
+this is testcase4
+===============================================
+Suite
+Total tests run: 4, Failures: 2, Skips: 0
+
+===============================================
