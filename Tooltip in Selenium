@@ -1,0 +1,95 @@
+Program1 (without actions class when title attribute present for the element):
+import org.openqa.selenium.By;
+
+import org.openqa.selenium.WebDriver;
+
+import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+
+
+public class ToolTipDemo {
+
+ public static void main(String[] args) throws InterruptedException {
+
+ 
+  WebDriver driver;
+
+  System.setProperty("webdriver.chrome.driver",
+
+    "C:\\Users\\Hitendra\\Downloads\\chromedriver_win32\\chromedriver.exe");
+
+  driver = new ChromeDriver();
+
+  driver.manage().window().maximize();
+
+  driver.get("https://www.automationtestinginsider.com/");
+
+  Thread.sleep(1000); 
+
+  WebElement searchBox=driver.findElement(By.xpath("//input[@class='gsc-input']"));
+
+ 
+  String tooltipText=searchBox.getAttribute("title");
+ 
+
+  System.out.println("Tooltip text is: "+tooltipText); 
+
+  driver.close();
+
+ }
+
+}
+
+
+
+
+Program2(using Actions Class):
+
+import org.openqa.selenium.By;
+
+import org.openqa.selenium.WebDriver;
+
+import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.openqa.selenium.interactions.Actions;
+
+
+public class ToolTipDemo1 {
+
+ public static void main(String[] args) throws InterruptedException {
+
+ 
+  WebDriver driver;
+
+  System.setProperty("webdriver.chrome.driver",
+
+    "C:\\Users\\Hitendra\\Downloads\\chromedriver_win32\\chromedriver.exe");
+
+  driver = new ChromeDriver();
+
+  driver.manage().window().maximize();
+
+  driver.get("http://demoqa.com/tooltip-and-double-click/");
+
+  Thread.sleep(1000);
+  
+  Actions act= new Actions(driver);
+ 
+  WebElement mouseHover=driver.findElement(By.id("tooltipDemo"));
+  
+  act.moveToElement(mouseHover).perform();
+  
+  WebElement tooltipMsg=driver.findElement(By.xpath("//span[@class='tooltiptext']"));
+
+
+  System.out.println("Tooltip Message is: "+tooltipMsg.getText());
+
+ 
+  driver.close();
+
+ }
+
+}
