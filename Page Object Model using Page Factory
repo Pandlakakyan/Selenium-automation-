@@ -1,0 +1,137 @@
+ BaseClass.java
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import com.OrangeHRM.pages.LoginPage;
+
+/**
+ * @author 
+ *  
+ */
+public class BaseClass {
+ 
+ public static WebDriver driver;
+ public LoginPage loginPage;
+ 
+ @BeforeMethod
+ public void setup() {
+  System.setProperty("webdriver.chrome.driver",
+    "C:\\Users\\p\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
+  driver= new ChromeDriver();
+  driver.manage().window().maximize();
+  driver.get("https://opensource-demo.orangehrmlive.com/index.php/auth/validateCredentials");
+  loginPage=new LoginPage();
+ }
+ @AfterMethod
+ public void tearDown() {
+  driver.close();
+ }
+}
+
+
+LoginPage.java
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+
+import com.OrangeHRM.base.BaseClass;
+
+public class LoginPage extends BaseClass {
+ 
+ @FindBy(id="txtUsername") 
+ WebElement userName;
+ 
+ @FindBy(name="txtPassword") 
+ WebElement password;
+ 
+ @FindBy(xpath="//*[@id=\"btnLogin\"]") 
+ WebElement loginBtn;
+ 
+ @FindBy(xpath="//*[@id=\"divLogo\"]/img") 
+ WebElement logo;
+ 
+ public LoginPage() {
+  PageFactory.initElements(driver, this);
+ }
+ 
+ public boolean validateLogo() {
+  logo.isDisplayed();
+  return true;
+ }
+ //This method will return object of HomePage class as we are landing on 
+ //HomePage using this method
+ public HomePage login(String uname, String pswd) {
+  userName.sendKeys(uname);
+  password.sendKeys(pswd);
+  loginBtn.click();
+  return new HomePage();
+ }
+}
+
+HomePage.java
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import com.OrangeHRM.base.BaseClass;
+
+public class HomePage extends BaseClass {
+ 
+ @FindBy(xpath="//*[@id=\"menu_admin_viewAdminModule\"]/b")
+ WebElement adminTab;
+ 
+ public HomePage() {
+  PageFactory.initElements(driver, this);
+ }
+ //This method will return object of SystemUsersPage class as we are landing on 
+ //SystemUsersPage using this method
+ public SystemUsersPage clickOnAdminTab() {
+  adminTab.click();
+  return new SystemUsersPage();
+ }
+}
+
+
+
+LoginPageTest.java
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import com.OrangeHRM.base.BaseClass;
+import com.OrangeHRM.pages.HomePage;
+
+public class LoginPageTest extends BaseClass {
+ HomePage homePage;
+ 
+ @Test(priority = 1)
+ public void logoTest() {
+  boolean flag=loginPage.validateLogo();
+  Assert.assertTrue(flag);
+ }
+ @Test(priority = 2)
+ public void loginTest() {
+  homePage=loginPage.login("admin", "admin123");
+  String expectedURL="https://opensource-demo.orangehrmlive.com/index.php/dashboard";
+  String actualURL=BaseClass.driver.getCurrentUrl();
+  Assert.assertEquals(actualURL, expectedURL);
+ }
+}
+
+HomePageTest.java
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import com.OrangeHRM.base.BaseClass;
+import com.OrangeHRM.pages.HomePage;
+
+public class HomePageTest extends BaseClass {
+ HomePage homePage;
+ 
+ @Test(priority = 3)
+ public void clickOnAdminTab() throws InterruptedException  {
+  homePage=loginPage.login("admin", "admin123");
+  homePage.clickOnAdminTab();
+  Thread.sleep(2000);
+  String expectedURL="https://opensource-demo.orangehrmlive.com/index.php/admin/viewSystemUsers";
+  String actualURL=BaseClass.driver.getCurrentUrl();
+  Assert.assertEquals(actualURL, expectedURL);
+ }
+}
