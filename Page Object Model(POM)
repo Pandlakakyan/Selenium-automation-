@@ -1,0 +1,76 @@
+LoginPage Class:
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class LoginPage {
+ WebDriver driver;
+    //UI Elements
+ By username = By.id("txtUsername");
+ By password = By.name("txtPassword");
+ By loginBtn = By.xpath("//*[@id=\"btnLogin\"]");
+ By logo = By.xpath("//*[@id=\"divLogo\"]/img");
+    
+ //Constructor to initialize current class objects 
+ public LoginPage(WebDriver driver) {
+  this.driver=driver;
+ }
+ //User Actions methods
+ public boolean validateLogo() {
+  driver.findElement(logo).isDisplayed();
+  return true;
+ }
+ public HomePage login(String uname, String pswd) {
+  driver.findElement(username).sendKeys(uname);
+  driver.findElement(password).sendKeys(pswd);
+  driver.findElement(loginBtn).click();
+  return new HomePage();
+ }
+}
+
+LoginPageTest Class:
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import com.orangeHRM.pages.HomePage;
+import com.orangeHRM.pages.LoginPage;
+
+/**
+ * @author 
+ *  
+ */
+public class LoginPageTest {
+ public WebDriver driver;
+ LoginPage loginPage;
+ HomePage homepage;
+ 
+ @BeforeMethod
+ public void setUp() {
+  System.setProperty("webdriver.chrome.driver",
+    "C:\\Users\\p\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
+  
+  driver= new ChromeDriver();
+  loginPage= new LoginPage(driver);
+  driver.manage().window().maximize();
+  driver.get("https://opensource-demo.orangehrmlive.com/index.php/auth/validateCredentials");
+ }
+ @Test
+ public void varifyLogo() {
+  
+  boolean flag=loginPage.validateLogo();
+  Assert.assertTrue(flag);
+ }
+ @Test
+ public void varifyLogin() {
+  homepage=loginPage.login("admin", "admin123");
+  String actualURL= driver.getCurrentUrl();
+  String expectedURL= "https://opensource-demo.orangehrmlive.com/index.php/dashboard";
+  Assert.assertEquals(actualURL, expectedURL);
+ }
+ @AfterMethod
+ public void tearDown() {
+  driver.close();
+ }
+}
